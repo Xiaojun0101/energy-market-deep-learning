@@ -29,7 +29,7 @@ class SimpleMarket(gym.Env):
         # Define
         obs_high = [
                             300, #demand
-                            300, #available MW
+                            300, #available MW (despatched quantity)
                             market_config['MAX_PRICE'],  # Last Price
                             market_config['MAX_PRICE'],  # my_price
                             market_config['MAX_PRICE'],  #second paticipants price
