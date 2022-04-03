@@ -5,13 +5,8 @@ import threading
 import time
 from random import randint, random
 from marketsim.simulations.simulation import Simulation
-from marketsim.util.logging import tprint
+from marketsim.util.test_logging import tprint
 import json
-
-
-
-
-
 
 class ServerTask(threading.Thread):
     """ServerTask"""
@@ -22,7 +17,7 @@ class ServerTask(threading.Thread):
         # Set up zero MQ frontend - this connects to clients
         context = zmq.Context()
         frontend = context.socket(zmq.ROUTER)
-        frontend.bind('tcp://*:5570')
+        frontend.bind('tcp://*:5559')
         # Set up zeromq backend - this connects to 
         backend = context.socket(zmq.DEALER)
         backend.bind('inproc://backend')
@@ -32,6 +27,7 @@ class ServerTask(threading.Thread):
         simulation = Simulation()
         # Create the worker threads, pass them the simulations. There must be at least as many threads as participants.
         for i in range(len(simulation.participant_list)):
+            print(simulation.participant_list[i])
             worker = ServerWorker(context, simulation)
             worker.start()
             workers.append(worker)
@@ -65,16 +61,19 @@ class ServerWorker(threading.Thread):
         # 'Main Loop'
         while True:
             # Clear the event, so it blocks on wait further down.
+            print('\n enter the event')
             self.dispatch_event.clear()
             # Receive a message via zeromq.
             ident, msg = worker.recv_multipart()
             data = json.loads(msg)
+            print(data)
             # Add the received bid to the simulation.
             self.simulation.add_bid(data, self.callback)
             # Wait for all bids to be submitted and dispatch to occur (notified via callback below)
             self.dispatch_event.wait()
-            # Send the simulation state as reply.
+            # Send the simulation state as reply
             reply = bytes(json.dumps(self.sim_state),'UTF-8')
+            print('send back', reply)
             worker.send_multipart([ident, reply])
             
         worker.close()

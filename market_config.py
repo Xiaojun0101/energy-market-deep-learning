@@ -1,16 +1,19 @@
 
 params = {
     # Sorted list of participants. 
-    'PARTICIPANTS' : sorted(['GEN_1', 'GEN_2']),
+    #'PARTICIPANTS' : sorted(['GEN_1', 'GEN_2', 'Gen_3']),
+    'PARTICIPANTS' : sorted(['Nyngan', 'Bayswater', 'Moree']),
+
+
     
     # This needs to be more than or equal to no_participants * no_bands. 
-    'MAX_DEMAND' : 10,
+    'MAX_DEMAND' : 300,
     # Include the last set of bids in the observation space.
     'REVEAL_PREVIOUS_BIDS':True,
     # Give the agent an example of how bidders behaved last time next demand was seen. 
     'PROVIDE_HISTORICAL_CONTEXT':False,
     # In observation, give the agent an accurate forecast of the next demand
-    'SHOW_NEXT_DEMAND':False,
+    'SHOW_NEXT_DEMAND':True,
 
     # Demand type - can be one of random, fixed, evolving etc. Defaults to random.
     'DEMAND_TYPE':'random', #Random number generator within given range.

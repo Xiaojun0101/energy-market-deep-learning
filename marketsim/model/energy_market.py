@@ -6,7 +6,8 @@ class Bid():
     def __init__(self, label, price, quantity, band):
         self.label = label
         # Add a random number here so that when bids are tied, the selection is truly random. 
-        self.price = price + random.random()
+        #self.price = price + random.random()
+        self.price = price
         self.quantity = quantity
         self.band = band
     
@@ -36,7 +37,9 @@ class BidStack():
     
     def economic_dispatch(self, capacity_MW):
         """Takes a capacity_MW and returns modified bids accepted under economic dispatch."""
+        print('demand', capacity_MW)
         meritorder = sorted(self.stack, key=lambda k: k.price)
+
         accepted = []
         cumulative_cap_MW = 0
         # Loop through the sorted bids.
@@ -49,6 +52,7 @@ class BidStack():
                 bid.quantity = capacity_MW - cumulative_cap_MW
                 accepted.append(bid)
                 break
+
         return accepted
 
     def get_all_bids_dict(self):
@@ -90,6 +94,7 @@ class Market():
         self.timestep += 1
         self.submitted = { p : False for p in self.participant_labels }
         self.demand_MW = demand_MW
+        #print('demand for current market', self.demand_MW)
         self.bidstack = BidStack()
     
     def reset(self, demand_MW):
@@ -104,7 +109,6 @@ class Market():
         
         for bid in bids:
             self.bidstack.add_price_quantity_bid(bid)
-        
         self.check_finished()
 
     def _get_state(self):

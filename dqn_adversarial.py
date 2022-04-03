@@ -1,13 +1,14 @@
 import numpy as np
 import gym
-
+from gym.wrappers import clip_action
 import marketsim.openai.envs
 
 from marketsim.logbook.logbook import logbook
 
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Flatten, LSTM
-from keras.optimizers import Adam
+from tensorflow.keras.optimizers import Adam
+#from keras.optimizers import Adam
 
 import tensorflow as tf
 from keras import backend as K
@@ -19,8 +20,6 @@ from rl.memory import SequentialMemory
 import pendulum
 
 import sys
-
-import space_wrappers
 
 from market_config import params as market_config
 
@@ -57,8 +56,8 @@ else:
 
 
 # ENV_NAME = 'CartPole-v0'
-# ENV_NAME = 'MultiBidMarket-v0'
-ENV_NAME = 'MultiBidMarketEfficient-v0'
+ENV_NAME = 'MultiBidMarket-v0'
+#ENV_NAME = 'MultiBidMarketEfficient-v0'
 
 
 logbook().record_metadata('Environment', ENV_NAME)
@@ -79,7 +78,8 @@ for param in market_config:
 # Get the environment and extract the number of actions.
 env = gym.make(ENV_NAME)
 # Wrap so that we have a discrete action space - maps the internal MultiDiscrete action space to a Discrete action space.
-env = space_wrappers.FlattenedActionWrapper(env)
+#env = space_wrappers.FlattenedActionWrapper(env)
+env = clip_action.FlattenedActionWrapper(env)
 env.connect(participant_name, market_config['PARTICIPANTS'].index(participant_name))
 np.random.seed(123)
 env.seed(123)
@@ -103,6 +103,9 @@ logbook().record_hyperparameter('action_space_size', str(nb_actions))
 
 # This is a model based on Deep RL Trader by miroblog (https://github.com/miroblog/deep_rl_trader)
 model = Sequential()
+#LSTM(output_dim, input_dim)
+#env.observation_space.shape is 1-d shape
+#input_shape=(1,) + (4,) = (1, 4)
 model.add(LSTM(64, input_shape=(1,) + env.observation_space.shape, return_sequences=True))
 model.add(LSTM(64))
 model.add(Dense(32))

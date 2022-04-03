@@ -1,10 +1,12 @@
 
 # import dependency_injector.containers as containers
+#from dependency_injector import providers
 import dependency_injector.providers as providers
 import requests
 import json
 
 POST_URL='https://deeplearninglog.herokuapp.com/api/simdata'
+path = 'F:\\test_github\\'
 # Need to make this threadsafe for sure. 
 class Log():
     def __init__(self):
@@ -34,7 +36,7 @@ class Log():
             # 'demand':{},
             
             'bidstacks': {
-                # 0 :{
+                # timestamp '0' :{
                 #     'nyngan': {
                 #         'meta': {
                 #             'label': 'nyngan',
@@ -104,9 +106,17 @@ class Log():
         """
 
         print("Submitting to remote server")
+        data = json.dumps(self.data)
         # try:
-        requests.post(POST_URL, data=json.dumps(self.data))
+        #requests.post(POST_URL, data=json.dumps(self.data))
+        f2 = open(path+self.data['label'][:31]+'.txt', 'w')
+        f2.write(data)
+        f2.close()
+        with open(path+'result_'+self.data['label'][:31]+'.json', 'w') as fs:
+            json.dump(self.data, fs)
+
         print("Successfully submitted")
+
         # except:
         #     print("Logbook submission failed.")
     

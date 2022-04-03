@@ -3,7 +3,7 @@ from marketsim.model.energy_market import Market, Bid
 from marketsim.model.demand import Demand, RandomDemand, RandomDiscreteDemand, FixedDemand, EvolvingDemand
 import market_config
 import inspect
-from ..util.logging import tprint
+from marketsim.util.test_logging import tprint
 from threading import Lock
 
 import os

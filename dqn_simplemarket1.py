@@ -32,9 +32,9 @@ else:
     participant_name = sys.argv[1]
 
 # ENV_NAME = 'CartPole-v0'
-ENV_NAME0 = 'SimpleMarket-v0'
-ENV_NAME = 'SimpleMarket-v00'
-extra_label = "Simple Shadow"
+ENV_NAME1 = 'SimpleMarket-v0'
+ENV_NAME = 'SimpleMarket-v01'
+extra_label = "Simple Shadow1"
 
 logbook().set_label(extra_label+" "+ENV_NAME+" "+pendulum.now().format('ddd D/M HH:mm'))
 logbook().record_metadata('Environment', ENV_NAME)
@@ -43,7 +43,7 @@ for param in market_config:
     logbook().record_metadata('Market: '+param, market_config[param])
 
 # Get the environment and extract the number of actions.
-env = gym.make(ENV_NAME0)
+env = gym.make(ENV_NAME1)
 env.connect(participant_name, market_config['PARTICIPANTS'].index(participant_name))
 np.random.seed(123)
 env.seed(123)
@@ -53,7 +53,6 @@ logbook().record_hyperparameter('action_space_size', str(env.action_space.n))
 
 # Next, we build a very simple model.
 model = Sequential()
-print((1,) + env.observation_space.shape)
 model.add(Flatten(input_shape=(1,) + env.observation_space.shape))
 model.add(Dense(16))
 model.add(Activation('relu'))
@@ -73,6 +72,7 @@ logbook().record_model_json(model.to_json())
 memory = SequentialMemory(limit=50000, window_length=1)
 #policy = BoltzmannQPolicy()
 policy = EpsGreedyQPolicy()
+
 dqn = DQNAgent(model=model, nb_actions=nb_actions, memory=memory, nb_steps_warmup=100, target_model_update=1e-3, policy=policy)
 # Record to logbook
 logbook().record_hyperparameter('Agent', str(type(dqn)))

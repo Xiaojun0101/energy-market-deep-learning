@@ -29,7 +29,8 @@ class RandomDiscreteDemand():
         self.max = market_config['MAX_DEMAND']
     
     def next(self): 
-        return int(random.random() * float(self.max))
+        #return int(random.random() * float(self.max))
+        return int(random.randint(290, self.max))
 
 class EvolvingDemand():
     def __init__(self, probability=0.1):
