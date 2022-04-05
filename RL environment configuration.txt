@@ -1,0 +1,74 @@
+1. download and install anaconda (https://www.youtube.com/watch?v=Cabk72CQHBc)
+
+2. Open Anaconda Prompt
+	a. create new environment (https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html)
+	   conda create --name(e.g., mydemo) myenv
+	   conda activete mydemo
+	
+	b. install deep learning framework (based on requirements) and verify installation:
+	   install:
+		conda install -c anaconda tensorflow-gpu
+		conda install -c anaconda keras-gpu
+		conda install -c pytorch pytorch
+	   verify:
+	   	python -c "import tensorflow;print(tensorflow.__version__);"
+		python -c "import keras;print(keras.__version__);"
+		python -c "import torch;print(torch.__version__);"
+		python -c "import torch;print(torch.cuda.is_available());"
+
+	c. install OpenAI gym:
+	   pip install gym (default path: \Users\****\anaconda3\envs\mydemo\Lib\site-packages)
+	   pip install pyglet
+
+3. Open Pycharm
+	a. create new project:
+	   change existing interpreter:
+		\Users\****\anaconda3\envs\mydemo\python.exe
+
+	b. create new .py file:
+	   test code:
+		import gym
+		env = gym.make('MountainCar-v0')
+		for i_episode in range(20):
+		    observation = env.reset()
+		    for t in range(100):
+		        env.render()
+		        print(observation)
+		        action = env.action_space.sample()
+		        observation, reward, done, info = env.step(action)
+		    if done:
+		        print("Episode finished after {} timesteps".format(t+1))
+		        break
+		env.close()
+
+4. Customize environment
+	a. New enviroment location:
+		1) find the envs folder under gym (e.g., default path: \Users\****\anaconda3\envs\mydemo\Lib\site-packages\gym\envs)
+		2) create new folder (e.g., myenv) under classic_contol folder
+		3) copy cartpole.py to created folder and change cartpole.py name to myenv.py
+
+	b. Register simulator:
+		1) in folder classic_contol, open __init__.py:
+			add: from gym.envs.classic_control.myenv.myenv import MyEnv
+		2) in folder envs folder, open __init__.py:
+			add: register(
+    				id='MyEnv-v0',
+    				entry_point='gym.envs.classic_control:MyEnv',
+    				max_episode_steps=200,
+    				reward_threshold=195.0,
+			     )
+
+	c. Test created environment in Pycharm
+		Code:	
+			import gym
+ 
+			env = gym.make('MyEnv-v0')
+			env.reset()
+			for _ in range(1000):
+    			env.render()
+    			env.step(env.action_space.sample())
+
+
+	
+		
+
